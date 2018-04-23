@@ -9,24 +9,26 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 
 <GridPane hgap="5.0" maxHeight="Infinity" maxWidth="Infinity"
 	vgap="5.0" xmlns="http://javafx.com/javafx/8.0.141"
 	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="edu.cuny.brooklyn.project.controller.TreasureFrameViewController">
 	<rowConstraints>
-		<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
+		<RowConstraints minHeight="10.0" />
+		<RowConstraints minHeight="10.0" prefHeight="30.0"/>
 		<RowConstraints minHeight="10.0" prefHeight="300.0"
 			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" valignment="CENTER" />
+		<RowConstraints minHeight="10.0" />
 	</rowConstraints>
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES"
 			minWidth="200.0" prefWidth="200.0" />
-		<ColumnConstraints hgrow="ALWAYS" minWidth="200.0"
+		<ColumnConstraints minWidth="200.0"
 			prefWidth="300.0" />
+		<ColumnConstraints />
+		<ColumnConstraints />
 	</columnConstraints>
 	<padding>
 		<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -66,9 +68,13 @@
 				<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
 			</GridPane.margin>
 		</HBox>
-		<Canvas fx:id="canvas" height="200.0" width="200.0"
-			GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"
-			GridPane.vgrow="ALWAYS" />
+		<StackPane fx:id="canvasHolder" maxHeight="Infinity" maxWidth="Infinity"
+			style="-fx-background-color: white;" GridPane.columnSpan="2"
+			GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+			<children>
+				<Canvas fx:id="canvas" height="300.0" width="400.0" />
+			</children>
+		</StackPane>
 	</children>
 	<opaqueInsets>
 		<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

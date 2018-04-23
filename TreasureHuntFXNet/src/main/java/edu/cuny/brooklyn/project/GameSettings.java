@@ -71,4 +71,7 @@ public class GameSettings {
 	public final static String MSG_LOCATE_TREASURE_KEY = "locateTreasure";
 	public final static String MSG_APP_TITLE_TREASURE_HUNT_KEY = "appTitleTreasureHunt";
 	public final static String MSG_NO_LABEL_AT_LOCATION_KEY = "noLabelAtLocation";	
+	
+	public final static String MSG_TREASURE_CLUE_PART_1_KEY = "treasureClue1stPart";
+	public final static String MSG_TREASURE_CLUE_PART_2_KEY = "treasureClue2ndPart";
 }

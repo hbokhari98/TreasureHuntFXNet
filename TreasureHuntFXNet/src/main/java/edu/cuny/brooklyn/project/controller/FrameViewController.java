@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +39,28 @@ public class FrameViewController {
 	@FXML
 	private StackPane frameHolder;
 
-	private TreasureHuntState treasureHunt;
+	private TreasureHuntState treasureHuntState;
 
-	private StatusBroadcaster statusBroadCaster;
+	private StatusBroadcaster statusBroadcaster;
+	
+	private FrameContainer frameContainer;
+	
+	public void initialize() {
+		try {
+			initializeI18n();
+		} catch (IOException e) {
+			LOGGER.error("Cannot initialize i18n", e);
+		} catch (URISyntaxException e) {
+			LOGGER.error("Cannot initialize i18n", e);
+		}
+	}
+	
+	public void disableLocaleChange() {
+		lcComboBox.setDisable(true); 
+	}
 
 	@FXML
-	void exitGame(ActionEvent event) {
+	private void exitGame(ActionEvent event) {
 		LOGGER.debug("calling exitGame(ActionEvent event).");
 		exitGame((Event) event);
 	}
@@ -52,7 +69,7 @@ public class FrameViewController {
 		LOGGER.debug("calling exitGame(Event event).");
 		validateTreasureHunt();
 		validateStatusBroadcaster();
-		if (treasureHunt.isGameStateChanged()) {
+		if (treasureHuntState.isGameStateChanged()) {
 			UserDecision decision = NotificationHelper
 					.askUserDecision(new DecisionWrapper(UserDecision.CancelPendingAction));
 			switch (decision) {
@@ -60,30 +77,30 @@ public class FrameViewController {
 				event.consume();
 				break;
 			case DiscardGame:
-				statusBroadCaster.close();
+				statusBroadcaster.close();
 				Platform.exit();
 				break;
 			case SaveGame:
 				try {
-					treasureHunt.saveTheGame();
-					LOGGER.debug(String.format("Saved the game at %s.", treasureHunt.getTheGameFilePath()));
-					statusBroadCaster.close();
+					treasureHuntState.saveTheGame();
+					LOGGER.debug(String.format("Saved the game at %s.", treasureHuntState.getTheGameFilePath()));
+					statusBroadcaster.close();
 					Platform.exit();
 				} catch (FileNotFoundException e) {
 					LOGGER.error(String.format("Cannot found the file %s while saving the game.",
-							treasureHunt.getTheGameFilePath()), e);
-					NotificationHelper.showFileNotFound(treasureHunt.getTheGameFilePath());
+							treasureHuntState.getTheGameFilePath()), e);
+					NotificationHelper.showFileNotFound(treasureHuntState.getTheGameFilePath());
 				} catch (IOException e) {
 					LOGGER.error(String.format("Cannot write to the file %s while saving the game.",
-							treasureHunt.getTheGameFilePath()), e);
-					NotificationHelper.showWritingError(treasureHunt.getTheGameFilePath());
+							treasureHuntState.getTheGameFilePath()), e);
+					NotificationHelper.showWritingError(treasureHuntState.getTheGameFilePath());
 				}
 				break;
 			default:
 				throw new IllegalArgumentException(String.format("User decision's value (%s) is unexpected", decision));
 			}
 		} else {
-			statusBroadCaster.close();
+			statusBroadcaster.close();
 			Platform.exit();
 		}
 	}
@@ -105,6 +122,7 @@ public class FrameViewController {
 
 	private void initializeI18n() throws IOException, URISyntaxException {
 		List<Locale> lcList = I18n.getSupportedLocale();
+		LOGGER.debug("The number of locale bundles got: " + lcList.size());
 		lcComboBox.getItems().addAll(lcList);
 		Callback<ListView<Locale>, ListCell<Locale>> lcCellFactory = new Callback<ListView<Locale>, ListCell<Locale>>() {
 
@@ -140,45 +158,29 @@ public class FrameViewController {
 		lcComboBox.setCellFactory(lcCellFactory);
 		lcComboBox.valueProperty().addListener((observedLocale, oldLocale, newLocale) -> {
 			LOGGER.debug(String.format("Change locale from %s to %s.", oldLocale, newLocale));
-			// try {
-			// LOGGER.debug("TODO: change language results to a new game. Need to handle it
-			// better.");
-			// // reLoadScene(stage, newLocale);
-			// } catch (IOException e) {
-			// LOGGER.error("failed to load locale specific scene.", e);
-			// }
+			 try {
+				 LOGGER.debug("TODO: change language results to a new game. Need to handle it better.");
+				 reLoadScene(newLocale);
+			 } catch (IOException e) {
+				 LOGGER.error("failed to load locale specific scene.", e);
+			 }
 		});
 	}
 
-	// private void reLoadScene(Stage stage, Locale locale) throws IOException {
-	// I18n.setSelectedLocale(locale);
-	// I18n.setBundle(ResourceBundle.getBundle(I18n.getBundleBaseName(), locale));
-	// FXMLLoader loader = new
-	// FXMLLoader(TargetGameApp.class.getResource(TargetGameApp.FXML_MAIN_SCENE)
-	// , I18n.getBundle());
-	// Parent pane = loader.load();
-	//
-	// StackPane viewHolder = (StackPane)stage.getScene().getRoot();
-	//
-	// viewHolder.getChildren().clear();
-	// viewHolder.getChildren().add(pane);
-	//
-	// GameController controller = loader.getController();
-	// controller.setStage(stage);
-	// stage.setTitle(I18n.getBundle().getString(TargetGameApp.APP_TITLE_KEY));
-	//
-	// LOGGER.debug(targetGame.getTarget() == null? "No target set
-	// yet.":targetGame.getTarget().toString());
-	// }
+	 private void reLoadScene(Locale locale) throws IOException {
+		 I18n.setSelectedLocale(locale);
+		 I18n.setBundle(ResourceBundle.getBundle(I18n.getBundleBaseName(), locale));
+		 frameContainer.reload(I18n.getBundle());
+	 }
 
 	private void validateStatusBroadcaster() {
-		if (statusBroadCaster == null) {
+		if (statusBroadcaster == null) {
 			throw new IllegalStateException("StatusBroadcaster object must not be null");
 		}
 	}
 
 	private void validateTreasureHunt() {
-		if (treasureHunt == null) {
+		if (treasureHuntState == null) {
 			throw new IllegalStateException("TreasureHunt object must not be null");
 		}
 	}
@@ -186,5 +188,26 @@ public class FrameViewController {
 	public void setFrameOnTop(Parent view) {
 		frameHolder.getChildren().clear();
 		frameHolder.getChildren().add(view);
+	}
+
+	public void setContainer(FrameContainer frameContainer) {
+		if (frameContainer == null) {
+			throw new IllegalArgumentException("FrameContainer object must not be null.");
+		}
+		this.frameContainer = frameContainer;
+	}
+
+	public void setTreasureHuntState(TreasureHuntState treasureHuntState) {
+		if (treasureHuntState == null) {
+			throw new IllegalArgumentException("TreasureHuntState object must not be null.");
+		}
+		this.treasureHuntState = treasureHuntState;
+	}
+
+	public void setStatusBroadcaster(StatusBroadcaster statusBroadcaster) {
+		if (statusBroadcaster == null) {
+			throw new IllegalArgumentException("StatusBroadcaster object must not be null.");
+		}
+		this.statusBroadcaster = statusBroadcaster;
 	}
 }

@@ -15,13 +15,16 @@ import org.slf4j.LoggerFactory;
 
 import edu.cuny.brooklyn.project.controller.FrameContainer;
 import edu.cuny.brooklyn.project.message.I18n;
+import edu.cuny.brooklyn.project.net.StatusBroadcaster;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class TreasureHuntFXApp extends Application {
 	private final static Logger LOGGER = LoggerFactory.getLogger(TreasureHuntFXApp.class);
-	
+
+	private StatusBroadcaster statusBroadcaster;
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -36,6 +39,19 @@ public class TreasureHuntFXApp extends Application {
 		FrameContainer frameContainer = new FrameContainer(primaryStage, bundle);
 		frameContainer.showFlashScreen(); // where the game begins
 
+		statusBroadcaster = new StatusBroadcaster();
+		statusBroadcaster.start();
+		
+		frameContainer.setStatusBroadcaster(statusBroadcaster);
+
 		LOGGER.info("TreasureHuntFXApp exits.");
+	}
+
+	@Override
+	public void stop() {
+		LOGGER.info("Stopping StatusBoardcaster.");
+		if (statusBroadcaster != null) {
+			statusBroadcaster.close();
+		}
 	}
 }

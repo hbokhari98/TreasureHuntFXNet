@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.cuny.brooklyn.project.GameSettings;
+import edu.cuny.brooklyn.project.message.I18n;
 
 public class TreasureClue {
 	private final static Logger LOGGER = LoggerFactory.getLogger(TreasureClue.class);
@@ -28,7 +29,9 @@ public class TreasureClue {
 				xLeft, yTop, xLeft + width, yTop + length));
 		LOGGER.debug(String.format("Clue is given at (x, y) = (%d, %d)", x, y));
 		
-		return "A treasure of size " + Math.max(width, length) + " is near (" + x + "," + y + ").";
+		return I18n.getBundle().getString(GameSettings.MSG_TREASURE_CLUE_PART_1_KEY) 
+				+ " " +  Math.max(width, length) + " " + 
+				I18n.getBundle().getString(GameSettings.MSG_TREASURE_CLUE_PART_2_KEY) + " (" + x + "," + y + ").";
 	}
 
 }

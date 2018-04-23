@@ -39,6 +39,7 @@ public class StatusBroadcaster {
 		socket.setBroadcast(true);
 		if (!socket.getBroadcast()) {
 			socket.close();
+			socket = null;
 			throw new SocketException("Broadcast is not supported.");
 		}
 		buf = new byte[BUFFER_SIZE];
@@ -52,9 +53,15 @@ public class StatusBroadcaster {
 	}
 
 	public synchronized void close() {
-		socket.close();
-		socket = null;
-		timer.cancel();
+		if (socket != null) {
+			socket.close();
+			socket = null;
+		}
+		
+		if (timer != null) {
+			timer.cancel();
+			timer = null;
+		}
 		LOGGER.debug("closing the UDP broadcaster.");
 	}
 
@@ -82,7 +89,8 @@ public class StatusBroadcaster {
 
 								byte[] sendBuf = baos.toByteArray();
 								packet = new DatagramPacket(sendBuf, sendBuf.length, broadcast, BROADCAST_UDP_PORT);
-								synchronized (this) {
+								// this runs with the StatusBroadcaster:: close() method mutual exclusively
+								synchronized (this) { 
 									if (socket != null && !socket.isClosed()) {
 										socket.send(packet);
 										LOGGER.debug("send packet: " + message.toString());

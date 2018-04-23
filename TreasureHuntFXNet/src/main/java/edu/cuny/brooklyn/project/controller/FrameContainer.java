@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import edu.cuny.brooklyn.project.GameSettings;
 import edu.cuny.brooklyn.project.message.I18n;
+import edu.cuny.brooklyn.project.net.StatusBroadcaster;
+import edu.cuny.brooklyn.project.state.TreasureHuntState;
 import edu.cuny.brooklyn.project.treasure.TreasureGenerator;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,12 +37,62 @@ public class FrameContainer {
 	
 	private TreasureGenerator treasureGenerator;
 	
+	private TreasureHuntState treasureHuntState;
+	
+	private StatusBroadcaster statusBroadcaster;
+	
 	public FrameContainer(Stage stage, ResourceBundle bundle) throws IOException {
+		initializeContainer(stage, bundle);
+	}
+	
+
+	public void reload(ResourceBundle bundle) throws IOException {
+		initializeContainer(stage, bundle);
+		showFlashScreen(true);
+	}
+	
+
+
+	public void setStatusBroadcaster(StatusBroadcaster statusBroadcaster) {
+		if (statusBroadcaster == null) {
+			throw new IllegalArgumentException("StatusBroadcaster object must not be null.");
+		}
+		this.statusBroadcaster = statusBroadcaster;
+		
+		mainViewController.setStatusBroadcaster(statusBroadcaster);
+	}
+	
+	public void showFlashScreen() {
+		showFlashScreen(false);
+	}
+
+	public void showFlashScreen(boolean reload) {
+		LOGGER.debug("showing flash screen.");
+		showScreenWithFrame(reload, this.flashFrame, GameSettings.MSG_APP_TITLE_FLASH_KEY);
+	}
+	
+	
+	private void answerPuzzler() {
+		LOGGER.debug("solving puzzler.");
+		if (puzzlerFrameController.answerPuzzler()) {
+			String clue = TreasureClue.getClue(treasureFrameController.getTreasureField().getTreasureXLeft(),
+					treasureFrameController.getTreasureField().getTreasureYTop(),
+					treasureFrameController.getTreasureField().getTreasureBoundingBoxWidth(),
+					treasureFrameController.getTreasureField().getTreasureBoundingBoxLength(),
+					puzzlerFrameController.getAnsweringAttempts());
+			treasureFrameController.setAttempts(puzzlerFrameController.getAnsweringAttempts());
+			treasureFrameController.startLocatingTreasure(clue);
+			showTreasureScreen();
+		}
+	}
+	
+	private void initializeContainer(Stage stage, ResourceBundle bundle) throws IOException {
 		this.stage = stage;
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(GameSettings.FRAME_VIEW_PATH), bundle);
 		mainView = fxmlLoader.load();
 		mainViewController = fxmlLoader.getController();
+		mainViewController.setContainer(this);
 		
 		fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(GameSettings.TREASURE_VIEW_PATH), bundle);
 		treasureFrame = fxmlLoader.load();
@@ -55,31 +107,17 @@ public class FrameContainer {
 		flashFrameController = fxmlLoader.getController();
 		
 		
-		flashFrameController.setOnStartButtonAction(e -> showPuzzlerScreen());
+		flashFrameController.setOnStartButtonAction(e -> startGame());
 		puzzlerFrameController.setOnAnswerButtonAction(e -> answerPuzzler());
 		treasureFrameController.setOnButtonTreasureAction(e -> treasureFrameController.doTreasureLocationAction());
 		
 		treasureGenerator = new TreasureGenerator();
 		treasureFrameController.getTreasureField().setTreasureGenerator(treasureGenerator);
-	}
-
-	public void showFlashScreen() {
-		LOGGER.debug("showing flash screen.");
-		showScreenWithFrame(this.flashFrame, GameSettings.MSG_APP_TITLE_FLASH_KEY);
-	}
-	
-	private void answerPuzzler() {
-		LOGGER.debug("solving puzzler.");
-		if (puzzlerFrameController.answerPuzzler()) {
-			String clue = TreasureClue.getClue(treasureFrameController.getTreasureField().getTreasureXLeft(),
-					treasureFrameController.getTreasureField().getTreasureYTop(),
-					treasureFrameController.getTreasureField().getTreasureBoundingBoxWidth(),
-					treasureFrameController.getTreasureField().getTreasureBoundingBoxLength(),
-					puzzlerFrameController.getAnsweringAttempts());
-			treasureFrameController.setAttempts(puzzlerFrameController.getAnsweringAttempts());
-			treasureFrameController.startLocatingTreasure(clue);
-			showTreasureScreen();
+		
+		if (treasureHuntState == null) {
+			treasureHuntState = new TreasureHuntState();
 		}
+		mainViewController.setTreasureHuntState(treasureHuntState);
 	}
 
 	private void showTreasureScreen() {
@@ -97,17 +135,27 @@ public class FrameContainer {
 	}
 	
 	private void showScreenWithFrame(Parent view, String title_key) {
+		showScreenWithFrame(false, view, title_key);
+	}
+	
+	private void showScreenWithFrame(boolean reload, Parent view, String title_key) {
 		if (mainViewController == null) {
 			throw new IllegalStateException("mainViewcontroller must not be null.");
 		}
-		mainViewController.setFrameOnTop(view);
-		if (stage.getScene() == null) {
+		
+		if (reload || stage.getScene() == null) {
 			scene = new Scene(mainView);
 			stage.setScene(scene);
 			stage.show();
 		} 
+		mainViewController.setFrameOnTop(view);
 		if (title_key != null && !title_key.isEmpty()) {
 			stage.setTitle(I18n.getBundle().getString(title_key));
 		}
+	}
+	
+	private void startGame() {
+		showPuzzlerScreen();
+		mainViewController.disableLocaleChange();
 	}
 }

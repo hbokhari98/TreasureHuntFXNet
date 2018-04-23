@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 
 public class TreasureFrameViewController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(TreasureFrameViewController.class);
@@ -44,6 +45,9 @@ public class TreasureFrameViewController {
 
     @FXML
     private Canvas canvas;
+    
+    @FXML
+    private StackPane canvasHolder;
 
     
 	private Scorer scorer;
@@ -61,6 +65,9 @@ public class TreasureFrameViewController {
 		initializeScore();
 		
 		buttonTreasure.setOnAction(e -> doTreasureLocationAction());
+		
+		canvas.widthProperty().bind(canvasHolder.widthProperty().subtract(20));
+		canvas.heightProperty().bind(canvasHolder.heightProperty().subtract(20));
 	}
 	
 	
