@@ -111,13 +111,21 @@ public class FrameContainer {
 		puzzlerFrameController.setOnAnswerButtonAction(e -> answerPuzzler());
 		treasureFrameController.setOnButtonTreasureAction(e -> treasureFrameController.doTreasureLocationAction());
 		
-		treasureGenerator = new TreasureGenerator();
+		if (treasureHuntState == null) {
+			treasureGenerator = new TreasureGenerator();
+		}
 		treasureFrameController.getTreasureField().setTreasureGenerator(treasureGenerator);
 		
 		if (treasureHuntState == null) {
 			treasureHuntState = new TreasureHuntState();
 		}
 		mainViewController.setTreasureHuntState(treasureHuntState);
+		
+		if (this.statusBroadcaster != null) {
+			mainViewController.setStatusBroadcaster(this.statusBroadcaster);
+		} else {
+			LOGGER.debug("this.statusBroadcaster is null");
+		}
 	}
 
 	private void showTreasureScreen() {
