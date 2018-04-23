@@ -59,7 +59,7 @@ public class FrameContainer {
 		}
 		this.statusBroadcaster = statusBroadcaster;
 		
-		mainViewController.setStatusBroadcaster(statusBroadcaster);
+		mainViewController.setStatusBroadcaster(this.statusBroadcaster);
 	}
 	
 	public void showFlashScreen() {
