@@ -4,6 +4,6 @@ This repository contains the start-up code of class projects in
 CISC 3120 Sections MW8 and MW2, Spring 2018
 
 
-- Project 3: TreasureHuntFX
+- Project 4: TreasureHuntFX (with File and Network I/O)
 
 
