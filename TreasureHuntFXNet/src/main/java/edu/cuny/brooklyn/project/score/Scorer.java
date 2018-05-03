@@ -12,6 +12,10 @@ public class Scorer {
 		roundScore = 0;
 	}
 	
+	public void nextRound() {
+		roundScore = 0;
+	}
+	
 	public int getTotalScore() {
 		return totalScore;
 	}

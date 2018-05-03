@@ -30,6 +30,9 @@ public class TreasureFrameViewController {
 
     @FXML
     private Button buttonTreasure;
+    
+    @FXML
+    private Button buttonNext;
 
     @FXML
     private Label totalScoreLabel;
@@ -65,12 +68,23 @@ public class TreasureFrameViewController {
 		initializeScore();
 		
 		buttonTreasure.setOnAction(e -> doTreasureLocationAction());
+		buttonNext.setVisible(false);
 		
 		canvas.widthProperty().bind(canvasHolder.widthProperty().subtract(20));
 		canvas.heightProperty().bind(canvasHolder.heightProperty().subtract(20));
 	}
 	
-	
+	public void nextRound() {
+		// fill this in
+		clearCanvas();
+		xPosTreasure.clear();
+		yPosTreasure.clear();
+		scorer.nextRound();
+		totalScoreLabel.setText(String.format(GameSettings.SCORE_FORMAT, scorer.getTotalScore()));
+		roundScoreLabel.setText(String.format(GameSettings.SCORE_FORMAT, scorer.getRoundScore()));
+		// visibility of button
+		buttonNext.setVisible(false);
+	}
 	
 	public TreasureField getTreasureField() {
 		return treasureField;
@@ -106,6 +120,7 @@ public class TreasureFrameViewController {
 		
 		if (treasureField.foundTreasure(xInput, yInput)) {
 			LOGGER.debug("Found treasure at location (" + xInput + "," + yInput + ")");
+			buttonNext.setVisible(true);
 			doneGuessing();
 			showTreasure();
 			updateScore();
@@ -183,5 +198,9 @@ public class TreasureFrameViewController {
 		scorer.updateScore(puzzlerAttempts);
 		totalScoreLabel.setText(String.format(GameSettings.SCORE_FORMAT, scorer.getTotalScore()));
 		roundScoreLabel.setText(String.format(GameSettings.SCORE_FORMAT, scorer.getRoundScore()));
+	}
+
+	public void setOnNextAction(EventHandler<ActionEvent> handler) {
+		buttonNext.setOnAction(handler);
 	}
 }

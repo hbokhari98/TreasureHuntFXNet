@@ -109,6 +109,10 @@ public class FrameContainer {
 		
 		flashFrameController.setOnStartButtonAction(e -> startGame());
 		puzzlerFrameController.setOnAnswerButtonAction(e -> answerPuzzler());
+		treasureFrameController.setOnNextAction(e -> {
+			treasureFrameController.nextRound();
+			showPuzzlerScreen();
+		});
 		treasureFrameController.setOnButtonTreasureAction(e -> treasureFrameController.doTreasureLocationAction());
 		
 		if (treasureHuntState == null) {

@@ -42,6 +42,8 @@ public class PuzzlerFrameViewController {
 		puzzler = puzzlerMaker.make();
 		puzzlerLabel.setText(puzzler.getMessage());
 		answeringAttempts = 0;
+		// clear input field
+		puzzlerAnswer.clear();
 	}
 	
 	public void setOnAnswerButtonAction(EventHandler<ActionEvent> handler) {
