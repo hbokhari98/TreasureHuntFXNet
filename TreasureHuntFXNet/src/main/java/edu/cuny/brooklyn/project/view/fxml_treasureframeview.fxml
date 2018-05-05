@@ -43,6 +43,8 @@
 					text="%locateTreasure" />
 				<Button fx:id="buttonNext" mnemonicParsing="false"
 					text="Next Level" />
+				<Button fx:id="buttonExit" mnemonicParsing="false"
+					text="Exit" />
 			</children>
 			<GridPane.margin>
 				<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

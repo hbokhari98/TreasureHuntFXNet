@@ -35,6 +35,9 @@ public class TreasureFrameViewController {
     private Button buttonNext;
 
     @FXML
+    private Button buttonExit;
+    
+    @FXML
     private Label totalScoreLabel;
 
     @FXML
@@ -69,6 +72,7 @@ public class TreasureFrameViewController {
 		
 		buttonTreasure.setOnAction(e -> doTreasureLocationAction());
 		buttonNext.setVisible(false);
+		buttonExit.setVisible(false);
 		
 		canvas.widthProperty().bind(canvasHolder.widthProperty().subtract(20));
 		canvas.heightProperty().bind(canvasHolder.heightProperty().subtract(20));
@@ -84,6 +88,7 @@ public class TreasureFrameViewController {
 		roundScoreLabel.setText(String.format(GameSettings.SCORE_FORMAT, scorer.getRoundScore()));
 		// visibility of button
 		buttonNext.setVisible(false);
+		buttonExit.setVisible(false);
 	}
 	
 	public TreasureField getTreasureField() {
@@ -121,9 +126,11 @@ public class TreasureFrameViewController {
 		if (treasureField.foundTreasure(xInput, yInput)) {
 			LOGGER.debug("Found treasure at location (" + xInput + "," + yInput + ")");
 			buttonNext.setVisible(true);
+			buttonExit.setVisible(true);
 			doneGuessing();
 			showTreasure();
 			updateScore();
+			buttonExit.setOnAction(e -> System.exit(0));
 		} else {
 			LOGGER.debug("No treasure at location (" + xInput + "," + yInput + ")");
 			responseLabel.setVisible(true);
