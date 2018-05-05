@@ -29,6 +29,7 @@ public class StatusMessage implements Serializable {
     public StatusMessage(InetAddress address, int tcpServicePort) {
         this.address = address;
         this.tcpServicePort = tcpServicePort;
+        // add player name here maybe
     }
     
     public String toString() {
