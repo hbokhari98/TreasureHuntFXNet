@@ -62,6 +62,7 @@ public class GameSettings {
 	public final static String MSG_GAME_DESCRIPTION_KEY = "gameDescription";
 	public final static String MSG_START_GAME_KEY = "startGame";
 	public final static String MSG_APP_TITLE_FLASH_KEY = "appTitleFlash";
+	public final static String MSG_SETTINGS_KEY = "settings";
 	
 	public final static String MSG_ANSWER_PUZZLER_KEY = "answerPuzzler";
 	public final static String MSG_APP_TITLE_PUZZLER_KEY = "appTitlePuzzler";
