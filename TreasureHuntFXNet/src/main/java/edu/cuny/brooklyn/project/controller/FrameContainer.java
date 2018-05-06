@@ -108,7 +108,7 @@ public class FrameContainer {
 		
 		
 		flashFrameController.setOnStartButtonAction(e -> startGame());
-		flashFrameController.setOnSettingsButtonAction(e -> startGame());
+		flashFrameController.setOnSettingsButtonAction(e -> showSettingScreen());
 		puzzlerFrameController.setOnAnswerButtonAction(e -> answerPuzzler());
 		treasureFrameController.setOnNextAction(e -> {
 			treasureFrameController.nextRound();
@@ -145,6 +145,11 @@ public class FrameContainer {
 		LOGGER.debug("placed a treasure");
 		this.puzzlerFrameController.showNewPuzzler();
 		showScreenWithFrame(this.puzzlerFrame, GameSettings.MSG_APP_TITLE_PUZZLER_KEY);
+	}
+	
+	private void showSettingScreen() {
+		LOGGER.debug("showing settings screen.");
+		showScreenWithFrame(this.treasureFrame, GameSettings.MSG_SETTINGS_KEY);
 	}
 	
 	private void showScreenWithFrame(Parent view, String title_key) {
