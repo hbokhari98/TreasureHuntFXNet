@@ -57,6 +57,7 @@ public class GameSettings {
 	public static final String TREASURE_VIEW_PATH = "edu/cuny/brooklyn/project/view/fxml_treasureframeview.fxml";
 	public static final String PUZZLER_VIEW_PATH = "edu/cuny/brooklyn/project/view/fxml_puzzlerframeview.fxml";
 	public static final String FLASH_VIEW_PATH = "edu/cuny/brooklyn/project/view/fxml_flashframeview.fxml";
+	public static final String SETTINGS_VIEW_PATH = "edu/cuny/brooklyn/project/view/fxml_settingsview.fxml";
 
 	
 	public final static String MSG_GAME_DESCRIPTION_KEY = "gameDescription";

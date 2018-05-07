@@ -35,6 +35,8 @@ public class FrameContainer {
 	private Parent flashFrame;
 	private FlashFrameViewController flashFrameController;
 	
+//	private Parent settingsFrame;
+	
 	private TreasureGenerator treasureGenerator;
 	
 	private TreasureHuntState treasureHuntState;
@@ -106,6 +108,9 @@ public class FrameContainer {
 		flashFrame = fxmlLoader.load();
 		flashFrameController = fxmlLoader.getController();
 		
+//		fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(GameSettings.SETTINGS_VIEW_PATH), bundle);
+//		settingsFrame = fxmlLoader.load();
+//		flashFrameController = fxmlLoader.getController();
 		
 		flashFrameController.setOnStartButtonAction(e -> startGame());
 		flashFrameController.setOnSettingsButtonAction(e -> showSettingScreen());
