@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 public class FrameContainer {
 	private final static Logger LOGGER = LoggerFactory.getLogger(FrameContainer.class);
 	
+	private GameStatistics gameStats; 
+	
 	private Stage stage;
 	
 	private Scene scene;
@@ -47,6 +49,10 @@ public class FrameContainer {
 		initializeContainer(stage, bundle);
 	}
 	
+	public void setStats( GameStatistics gameS) {
+		gameStats = gameS;
+		gameStats.setTfvc(treasureFrameController);
+	}
 
 	public void reload(ResourceBundle bundle) throws IOException {
 		initializeContainer(stage, bundle);
@@ -115,8 +121,10 @@ public class FrameContainer {
 		flashFrameController.setOnStartButtonAction(e -> startGame());
 		flashFrameController.setOnSettingsButtonAction(e -> showSettingScreen());
 		puzzlerFrameController.setOnAnswerButtonAction(e -> answerPuzzler());
+//		gameStats.setAttempts();
 		treasureFrameController.setOnNextAction(e -> {
-			treasureFrameController.nextRound();
+			treasureFrameController.nextRound();			
+			gameStats.updateGameStats();
 			showPuzzlerScreen();
 		});
 		treasureFrameController.setOnButtonTreasureAction(e -> treasureFrameController.doTreasureLocationAction());

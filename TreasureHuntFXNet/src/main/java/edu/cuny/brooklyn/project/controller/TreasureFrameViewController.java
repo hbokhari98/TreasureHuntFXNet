@@ -58,6 +58,8 @@ public class TreasureFrameViewController {
     
 	private Scorer scorer;
 	private int puzzlerAttempts;
+	private int locatingAttempts;
+//	private int totalRounds;
 	private TreasureField treasureField;
 	
 	
@@ -67,6 +69,7 @@ public class TreasureFrameViewController {
 	public void initialize() {
 		scorer = new Scorer();
 		puzzlerAttempts = 0;
+		locatingAttempts = 0;
 		treasureField = new TreasureField();
 		initializeScore();
 		
@@ -122,7 +125,7 @@ public class TreasureFrameViewController {
 		}
 		xInput = Integer.parseInt(xInputText);
 		yInput = Integer.parseInt(yInputText);
-		
+		locatingAttempts++;
 		if (treasureField.foundTreasure(xInput, yInput)) {
 			LOGGER.debug("Found treasure at location (" + xInput + "," + yInput + ")");
 			buttonNext.setVisible(true);
@@ -136,6 +139,25 @@ public class TreasureFrameViewController {
 			responseLabel.setVisible(true);
 			responseLabel.setText(I18n.getBundle().getString(GameSettings.MSG_NO_LABEL_AT_LOCATION_KEY) + " (" + xInput + "," + yInput + ")");
 		}
+	}
+	
+	public int getLocatingAttempts() {
+		return locatingAttempts;
+	}
+
+	public int getPuzzlerAttempts() {
+		return puzzlerAttempts;
+	}
+	public int getTotalRounds() {
+		return scorer.getTotalRounds();
+	}
+	
+	public int getTotalScore() {
+		return scorer.getTotalScore();
+	}
+	
+	public int getRoundScore() {
+		return scorer.getRoundScore();
 	}
 	
 	public void setOnButtonTreasureAction(EventHandler<ActionEvent> handler) {
