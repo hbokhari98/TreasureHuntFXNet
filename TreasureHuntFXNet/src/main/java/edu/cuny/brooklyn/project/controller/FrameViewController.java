@@ -113,11 +113,49 @@ public class FrameViewController {
 	@FXML
 	void openGame(ActionEvent event) {
 		LOGGER.debug("openning a saved game: not implemented yet");
+		try {
+			openGame((Event) event);
+		}catch (FileNotFoundException e) {
+			System.err.println("Error: " + e.getMessage());
+		}catch (IOException e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+	}
+	void openGame(Event event) throws FileNotFoundException, IOException  {
+		Scanner sc = null;
+		try {
+			String fileName = treasureHuntState.getTheGameFilePath().toString();
+			File file = new File(fileName);
+			sc = new Scanner(file);
+			while (sc.hasNextLine())
+				System.out.println(sc.nextLine());
+		} catch (FileNotFoundException e) {
+			LOGGER.error(String.format("Cannot found the file %s while opening the game.",
+					treasureHuntState.getTheGameFilePath()), e);
+			NotificationHelper.showFileNotFound(treasureHuntState.getTheGameFilePath());
+		} 
 	}
 
 	@FXML
 	void saveTheGame(ActionEvent event) {
 		LOGGER.debug("saving the game: not implemented yet");
+		saveTheGame((Event) event);
+	}
+	void saveTheGame(Event event) {
+		validateTreasureHunt();
+		validateStatusBroadcaster();
+		try {
+			treasureHuntState.saveTheGame();
+			LOGGER.debug(String.format("Saved the game at %s.", treasureHuntState.getTheGameFilePath()));
+		} catch (FileNotFoundException e) {
+			LOGGER.error(String.format("Cannot found the file %s while saving the game.",
+					treasureHuntState.getTheGameFilePath()), e);
+			NotificationHelper.showFileNotFound(treasureHuntState.getTheGameFilePath());
+		} catch (IOException e) {
+			LOGGER.error(String.format("Cannot write to the file %s while saving the game.",
+					treasureHuntState.getTheGameFilePath()), e);
+			NotificationHelper.showWritingError(treasureHuntState.getTheGameFilePath());
+		}
 	}
 
 	private void initializeI18n() throws IOException, URISyntaxException {
