@@ -73,4 +73,40 @@ public class GameStatistics {
 		avgPuzzlerAttempts = totalPuzzlerAttempts/totalLocatingAttempts;
 		avgLocatingAttempts = totalLocatingAttempts/totalLocatingAttempts;	
 	}
+	public int getTotalRounds() {
+		return totalRounds;
+	}
+	public int getTotalAttempts() {
+		return totalAttempts;
+	}
+	public int getTotalLocatingAttempts() {
+		return totalLocatingAttempts;
+	}
+	public int getTotalPuzzlerAttempts() {
+		return totalPuzzlerAttempts;
+	}
+	public int getAvgPuzzlerAttempts() {
+		return avgPuzzlerAttempts;
+	}
+	public int getMinPuzzlerAttempts() {
+		return minPuzzlerAttempts;
+	}
+	public int getMaxPuzzlerAttempts() {
+		return maxPuzzlerAttempts;
+	}
+	public int getAvgLocatingAttempts() {
+		return avgLocatingAttempts;
+	}
+	public int getMinLocatingAttempts() {
+		return minLocatingAttempts;
+	}
+	public int getMaxLocatingAttempts() {
+		return maxLocatingAttempts;
+	}
+	public int getRoundScore() {
+		return roundScore;
+	}
+	public int getTotalScore() {
+		return totalScore;
+	}
 }
